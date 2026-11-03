@@ -42,6 +42,11 @@ For lower-memory frontend builds after a separate TypeScript check, use
 `NODE_ENV=production npx vite build --config vite.chat-build.config.ts`. This uses
 native minification and disables the duplicate in-build type checker.
 
+An end-to-end test with a fake AI service and disposable database is available:
+`go build -o /tmp/ezbookkeeping-test ezbookkeeping.go` then
+`python3 deploy/test_transaction_chat.py /tmp/ezbookkeeping-test`.
+It checks authentication, follow-up, explicit save, retry deduplication, and user isolation.
+
 Build on a development machine, not the production VPS:
 
     docker build --platform linux/amd64 -f deploy/Dockerfile.chat \
