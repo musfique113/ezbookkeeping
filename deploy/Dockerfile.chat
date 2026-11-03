@@ -1,6 +1,6 @@
 # Build the backend outside production; frontend dist is built and checked first.
-FROM golang:1.27.3-alpine3.24 AS backend
-RUN apk add --no-cache gcc musl-dev
+FROM --platform=$BUILDPLATFORM golang:1.27.3 AS backend
+RUN apt-get update && apt-get install -y --no-install-recommends gcc-x86-64-linux-gnu libc6-dev-amd64-cross && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
@@ -8,7 +8,7 @@ COPY ezbookkeeping.go ./
 COPY cmd ./cmd
 COPY pkg ./pkg
 ARG COMMIT_HASH=unknown
-RUN CGO_ENABLED=1 go build -p 2 -trimpath -ldflags "-w -s -X main.Version=2.2.0-chat -X main.CommitHash=${COMMIT_HASH}" -o /ezbookkeeping ezbookkeeping.go
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=x86_64-linux-gnu-gcc go build -p 2 -trimpath -ldflags "-w -s -linkmode external -extldflags '-static' -X main.Version=2.2.0-chat -X main.CommitHash=${COMMIT_HASH}" -o /ezbookkeeping ezbookkeeping.go
 FROM alpine:3.24.3
 RUN apk add --no-cache tzdata ca-certificates && addgroup -g 1000 -S ezbookkeeping && adduser -S -u 1000 -G ezbookkeeping ezbookkeeping
 WORKDIR /ezbookkeeping
