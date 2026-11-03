@@ -1,6 +1,10 @@
 # Build the backend outside production; frontend dist is built and checked first.
-FROM --platform=$BUILDPLATFORM golang:1.27.3 AS backend
-RUN apt-get update && apt-get install -y --no-install-recommends gcc-x86-64-linux-gnu libc6-dev-amd64-cross && rm -rf /var/lib/apt/lists/*
+FROM --platform=$BUILDPLATFORM golang:1.27.3-alpine3.24 AS toolchain
+FROM --platform=$BUILDPLATFORM debian:trixie-slim AS backend
+COPY --from=toolchain /usr/local/go /usr/local/go
+ENV PATH="/usr/local/go/bin:${PATH}" GOTOOLCHAIN=local GOMEMLIMIT=384MiB GOMAXPROCS=2
+RUN test -s /usr/local/go/bin/go && go version
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates git gcc-x86-64-linux-gnu libc6-dev-amd64-cross && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
