@@ -1,3 +1,5 @@
+import type { TransactionChatMessage, TransactionChatResponse } from '@/models/large_language_model.ts';
+
 import axios, { type AxiosRequestConfig, type AxiosRequestHeaders, type AxiosResponse } from 'axios';
 
 import type { ApiResponse } from '@/core/api.ts';
@@ -903,6 +905,11 @@ export default {
     },
     deleteExploration: (req: InsightsExplorerDeleteRequest): ApiResponsePromise<boolean> => {
         return axios.post<ApiResponse<boolean>>('v1/insights/explorers/delete.json', req);
+    },
+    chatTransaction: (req: { messages: TransactionChatMessage[] }): ApiResponsePromise<TransactionChatResponse> => {
+        return axios.post<ApiResponse<TransactionChatResponse>>('v1/llm/transactions/chat.json', req, {
+            timeout: DEFAULT_LLM_API_TIMEOUT
+        } as ApiRequestConfig);
     },
     recognizeTransactionText: ({ text }: { text: string }): ApiResponsePromise<RecognizedTransactionResponse> => {
         return axios.post<ApiResponse<RecognizedTransactionResponse>>('v1/llm/transactions/recognize_text.json', {

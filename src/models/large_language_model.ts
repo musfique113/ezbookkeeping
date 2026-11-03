@@ -24,3 +24,14 @@ export interface CodingAssistantResponse {
     readonly code: string;
     readonly failureReason?: string;
 }
+
+export interface TransactionChatMessage {
+    readonly role: 'user' | 'assistant';
+    readonly content: string;
+}
+
+export interface TransactionChatResponse {
+    readonly reply: string;
+    readonly missingFields: string[];
+    readonly draft?: RecognizedTransactionResponse;
+}
