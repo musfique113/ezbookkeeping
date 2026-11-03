@@ -12,7 +12,7 @@ COPY ezbookkeeping.go ./
 COPY cmd ./cmd
 COPY pkg ./pkg
 ARG COMMIT_HASH=unknown
-RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=x86_64-linux-gnu-gcc go build -p 2 -trimpath -ldflags "-w -s -linkmode external -extldflags '-static' -X main.Version=2.2.0-chat -X main.CommitHash=${COMMIT_HASH}" -o /ezbookkeeping ezbookkeeping.go
+RUN --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=x86_64-linux-gnu-gcc go build -p 2 -trimpath -ldflags "-w -s -linkmode external -extldflags '-static' -X main.Version=2.2.0 -X main.CommitHash=${COMMIT_HASH}" -o /ezbookkeeping ezbookkeeping.go
 FROM alpine:3.24.3
 RUN apk add --no-cache tzdata ca-certificates && addgroup -g 1000 -S ezbookkeeping && adduser -S -u 1000 -G ezbookkeeping ezbookkeeping
 WORKDIR /ezbookkeeping
