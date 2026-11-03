@@ -485,6 +485,7 @@ func startWebServer(c *core.CliContext) error {
 			apiV1Route.POST("/insights/explorers/delete.json", bindApi(api.InsightsExplorers.InsightsExplorerDeleteHandler, config))
 
 			// Large Language Models
+			apiV1Route.POST("/llm/transactions/chat.json", bindApi(api.LargeLanguageModels.TransactionChatHandler, config))
 			if config.TextRecognitionLLMConfig != nil && config.TextRecognitionLLMConfig.LLMProvider != "" {
 				if config.TransactionFromAITextRecognition {
 					apiV1Route.POST("/llm/transactions/recognize_text.json", bindApi(api.LargeLanguageModels.RecognizeTransactionTextHandler, config))

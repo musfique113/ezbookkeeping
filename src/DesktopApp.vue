@@ -1,6 +1,7 @@
 <template>
     <v-app>
         <router-view />
+        <transaction-chat />
     </v-app>
     <v-snackbar class="cursor-pointer" color="notification-background" location="top"
                 :multi-line="true" :timeout="-1" :close-on-content-click="true" v-model="showNotification">
@@ -16,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import TransactionChat from '@/components/common/TransactionChat.vue';
 import { ref, computed, watch, onMounted } from 'vue';
 
 import { useTheme } from 'vuetify';
